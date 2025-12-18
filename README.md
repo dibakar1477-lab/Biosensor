@@ -1,1 +1,610 @@
-# biosensor
+# Biosensor
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sensor — General Scheme & Principles</title>
+  <meta name="description" content="General scheme of a sensor with key principles and short descriptions." />
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0f172a;
+      --muted:#334155;
+      --faint:#64748b;
+      --card:#f8fafc;
+      --line:#e2e8f0;
+      --shadow:0 18px 44px rgba(2,6,23,.08);
+      --radius:18px;
+      --accent:#7c5cff;
+      --accent2:#06b6d4;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .nav{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+
+    .brand{ display:flex; align-items:center; gap:10px; font-weight: 800; }
+    .logo{
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(6,182,212,.75));
+      box-shadow: 0 14px 40px rgba(124,92,255,.18);
+      border: 1px solid rgba(2,6,23,.08);
+    }
+
+    .pill{
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(2,6,23,.02);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 18px 70px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: center;
+      padding: 24px 0 16px;
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(28px, 3.2vw, 42px);
+      line-height: 1.08;
+      letter-spacing: -0.8px;
+    }
+
+    .hero p{
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 15.5px;
+      line-height: 1.55;
+      max-width: 68ch;
+    }
+
+    .heroCard{
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(2,6,23,.02), rgba(2,6,23,.01));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .miniRow{
+      display:grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(2,6,23,.01);
+    }
+
+    .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-top: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 0 6px rgba(124,92,255,.10);
+    }
+
+    .miniRow strong{ font-size: 12px; }
+    .miniRow span{ display:block; font-size: 12px; color: var(--faint); line-height: 1.35; margin-top: 2px; }
+
+    section{ margin-top: 26px; }
+    .sectionTitle{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom: 10px; }
+    .sectionTitle h2{ margin:0; font-size: 18px; }
+    .sectionTitle p{ margin:0; color: var(--muted); font-size: 13px; }
+
+    .grid{ display:grid; grid-template-columns: 1.2fr .8fr; gap: 16px; align-items:start; }
+
+    .card{
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(2,6,23,.02), rgba(2,6,23,.01));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .cardHeader{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .hint{ font-size: 12px; color: var(--muted); }
+
+    .kbd{
+      font-size: 11px;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.02);
+      padding: 4px 8px;
+      border-radius: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .cardBody{ padding: 14px; }
+
+    /* Image for General Scheme (user-provided) */
+    .schemeImageWrap{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(2,6,23,.01);
+      padding: 10px;
+    }
+    .schemeImg{
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid rgba(2,6,23,.08);
+      background: #fff;
+    }
+    .imgNote{
+      margin-top: 10px;
+      color: var(--faint);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .imgNote code{
+      background: rgba(2,6,23,.03);
+      border: 1px solid var(--line);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    /* Scheme diagram (CSS-only) */
+    .flow{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .flowItem{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(2,6,23,.01);
+      padding: 12px;
+      position: relative;
+      min-height: 90px;
+    }
+
+    .flowItem strong{ display:block; font-size: 14px; margin-bottom: 6px; }
+    .flowItem span{ display:block; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+
+    .arrowRow{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 8px 0 10px;
+    }
+
+    .arrow{
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(124,92,255,.35), rgba(6,182,212,.25));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .arrow:after{
+      content: "";
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      transform: translateY(-50%) rotate(45deg);
+      border-top: 2px solid rgba(2,6,23,.35);
+      border-right: 2px solid rgba(2,6,23,.35);
+    }
+
+    .build{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Details list (no JS; always works in preview) */
+    details{
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.01);
+      border-radius: 16px;
+      padding: 10px 12px;
+    }
+
+    summary{
+      cursor: pointer;
+      list-style: none;
+      font-weight: 800;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    summary::-webkit-details-marker{ display:none; }
+
+    .smallTag{
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(2,6,23,.02);
+      white-space: nowrap;
+    }
+
+    details p{ margin: 8px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+
+    /* Principles grid */
+    .principles{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    /* Tabs (CSS-only radio tabs) */
+    .tabs{ display:grid; gap: 10px; }
+    .tabBar{ display:flex; gap: 8px; flex-wrap: wrap; }
+
+    .tabRadio{ position:absolute; opacity:0; pointer-events:none; }
+
+    .tabLabel{
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.01);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      transition: transform .12s ease;
+      user-select:none;
+    }
+    .tabLabel:hover{ transform: translateY(-1px); }
+
+    .tabPanel{
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.01);
+      border-radius: 16px;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      min-height: 80px;
+    }
+
+    /* panel switching */
+    #tA:checked ~ .tabBar label[for="tA"],
+    #tB:checked ~ .tabBar label[for="tB"],
+    #tC:checked ~ .tabBar label[for="tC"]{
+      border-color: rgba(124,92,255,.55);
+      background: rgba(124,92,255,.08);
+    }
+
+    .panel{ display:none; }
+    #tA:checked ~ .tabPanel .panelA{ display:block; }
+    #tB:checked ~ .tabPanel .panelB{ display:block; }
+    #tC:checked ~ .tabPanel .panelC{ display:block; }
+
+    /* Calibration mini-figure (SVG always renders) */
+    .curve{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(2,6,23,.01);
+      padding: 10px;
+      display:grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .curveTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .curveTop h3{ margin:0; font-size: 13.5px; }
+    .curveTop span{ color: var(--muted); font-size: 12px; }
+    .curveSvg{ width:100%; height: 200px; }
+
+    footer{
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-size: 12px;
+    }
+
+    @media (max-width: 940px){
+      .hero{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      .flow{ grid-template-columns: 1fr; }
+      .arrowRow{ display:none; }
+      .build{ grid-template-columns: 1fr; }
+      .principles{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>Sensor Overview</div>
+        <span class="pill">General scheme & principles</span>
+      </div>
+      <span class="kbd">No-JS preview-safe</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="hero">
+      <div>
+        <h1>How a sensor works — from sample to signal.</h1>
+        <p>
+          This page explains how a <b>Sensor</b> works! Follow along to learn more :)
+        </p>
+      </div>
+
+      <div class="heroCard">
+        <div class="miniRow">
+          <div class="dot" aria-hidden="true"></div>
+          <div>
+            <strong>General Scheme</strong>
+            <span>Sample → Analyte → Sensing → Transducer</span>
+          </div>
+        </div>
+        <div class="miniRow">
+          <div class="dot" aria-hidden="true" style="filter:hue-rotate(35deg)"></div>
+          <div>
+            <strong>Principles</strong>
+            <span>Selectivity, sensitivity, response time, drift…</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 1 ONLY -->
+    <section id="scheme">
+      <div class="sectionTitle">
+        <h2>General scheme of the sensor?</h2>
+        <p>Expandable items (works in any preview).</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cardHeader">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <strong style="font-size:13.5px;">General scheme (overview)</strong>
+              <span class="hint">Measurement flow + build layer</span>
+            </div>
+            <span class="kbd">Image</span>
+          </div>
+
+          <!-- Fixed: removed $1/$2 placeholders and wrapped content in .cardBody -->
+          <div class="cardBody">
+            <div class="schemeImageWrap">
+              <!-- Replace the src below with your image file name/path after you upload it -->
+              <img class="schemeImg" src="scheme.png" alt="General scheme of the sensor diagram" />
+              <div class="imgNote">Upload your diagram image, then replace <code>scheme.png</code> with the correct file name/path.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHeader">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <strong style="font-size:13.5px;">Short Description</strong>
+              <span class="hint">Open each item</span>
+            </div>
+            <span class="kbd">Details</span>
+          </div>
+          <div class="cardBody" style="display:grid; gap:10px;">
+            <details open>
+              <summary>Sample <span class="smallTag">Contains analyte</span></summary>
+              <p>The real-world material you measure (blood, water, air, food extract, etc.). It includes the analyte plus other components that can interfere.</p>
+            </details>
+            <details>
+              <summary>Analyte <span class="smallTag">Target</span></summary>
+              <p>The specific chemical/biological species you care about (e.g., glucose, lead ions, a hormone, a pathogen marker).</p>
+            </details>
+            <details>
+              <summary>Sensing Element <span class="smallTag">Recognition</span></summary>
+              <p>The part that interacts with the analyte (binding, catalysis, adsorption, reaction). Examples: enzymes, antibodies, aptamers, catalytic surfaces.</p>
+            </details>
+            <details>
+              <summary>Immobilization <span class="smallTag">Anchoring</span></summary>
+              <p>How the sensing element is attached so it stays functional: adsorption, covalent coupling, entrapment in gels/polymers, affinity capture, layer-by-layer films.</p>
+            </details>
+            <details>
+              <summary>Support <span class="smallTag">Platform</span></summary>
+              <p>The surface that carries the sensing layer and shapes performance (surface chemistry, conductivity, optical properties). Examples: electrodes, membranes, chips, fibers.</p>
+            </details>
+            <details>
+              <summary>Transducer <span class="smallTag">Signal</span></summary>
+              <p>Converts the sensing event into an output (electrical, optical, thermal, mass/strain). Example outputs: current/voltage change, wavelength shift, frequency shift.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="principles">
+      <div class="sectionTitle">
+        <h2>Principles</h2>
+        <p>Expandable cards (no scripts needed).</p>
+      </div>
+
+      <div class="card">
+        <div class="cardHeader">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <strong style="font-size:13.5px;">Core performance principles</strong>
+            <span class="hint">What makes a sensor reliable</span>
+          </div>
+          <span class="kbd">Details</span>
+        </div>
+        <div class="cardBody" style="display:grid; gap:10px;">
+          <div class="principles">
+            <details open>
+              <summary>Selectivity <span class="smallTag">Interference</span></summary>
+              <p>How well the sensor responds to the analyte vs other species (interferents). High selectivity reduces false positives and cross-talk.</p>
+            </details>
+            <details>
+              <summary>Sensitivity <span class="smallTag">Slope</span></summary>
+              <p>How much the signal changes per change in analyte concentration. Higher sensitivity makes small changes easier to detect.</p>
+            </details>
+            <details>
+              <summary>Dynamic Range <span class="smallTag">Useful span</span></summary>
+              <p>The concentration range over which readings are usable and predictable (often linear-ish over a portion).</p>
+            </details>
+            <details>
+              <summary>Response Time <span class="smallTag">Speed</span></summary>
+              <p>How quickly the sensor reaches a stable/usable value after a change. Often limited by diffusion, binding kinetics, and electronics.</p>
+            </details>
+            <details>
+              <summary>Reversibility <span class="smallTag">Reuse</span></summary>
+              <p>Whether the sensor returns to baseline after removing the analyte. Reversible sensors can be reused; irreversible ones may be single-use.</p>
+            </details>
+            <details>
+              <summary>Drift / Fouling <span class="smallTag">Stability</span></summary>
+              <p>Drift is slow signal change over time; fouling is surface blockage by sample components. Both can bias results and increase calibration needs.</p>
+            </details>
+            <details>
+              <summary>Sample Calibration Curve & LOD <span class="smallTag">Quantification</span></summary>
+              <p>Calibration maps signal → concentration using standards. LOD is the smallest concentration reliably distinguishable from baseline/noise (often defined using a threshold above the blank).</p>
+            </details>
+          </div>
+
+          <div class="curve" aria-label="Sample calibration curve and limit of detection">
+            <div class="curveTop">
+              <h3>Sample calibration curve & LOD</h3>
+              <span>Illustrative example (not real data)</span>
+            </div>
+            <svg class="curveSvg" viewBox="0 0 700 240" role="img" aria-label="Calibration curve with LOD">
+              <path d="M 70 30 L 70 200 L 650 200" stroke="rgba(2,6,23,.22)" stroke-width="2" fill="none" />
+              <text x="76" y="24" font-size="12" fill="rgba(51,65,85,.9)">Signal</text>
+              <text x="520" y="228" font-size="12" fill="rgba(51,65,85,.9)">Analyte concentration</text>
+
+              <g stroke="rgba(2,6,23,.10)" stroke-width="1">
+                <path d="M 70 160 L 650 160" />
+                <path d="M 70 120 L 650 120" />
+                <path d="M 70 80  L 650 80" />
+              </g>
+
+              <rect x="70" y="182" width="580" height="18" fill="rgba(2,6,23,.02)" stroke="rgba(2,6,23,.10)" />
+              <text x="78" y="194" font-size="11" fill="rgba(100,116,139,.95)">baseline / noise</text>
+
+              <path d="M 90 186 C 140 184, 190 178, 240 168 C 320 150, 400 125, 500 92 C 560 74, 610 60, 640 55"
+                    stroke="rgba(6,182,212,.70)" stroke-width="3" fill="none" />
+
+              <g fill="rgba(2,6,23,.72)">
+                <circle cx="110" cy="185" r="4" />
+                <circle cx="180" cy="179" r="4" />
+                <circle cx="260" cy="164" r="4" />
+                <circle cx="360" cy="140" r="4" />
+                <circle cx="470" cy="110" r="4" />
+                <circle cx="590" cy="70" r="4" />
+              </g>
+
+              <path d="M 205 200 L 205 170" stroke="rgba(124,92,255,.70)" stroke-width="3" />
+              <path d="M 205 170 L 70 170" stroke="rgba(124,92,255,.45)" stroke-width="2" stroke-dasharray="6 6" />
+              <text x="214" y="168" font-size="11" fill="rgba(15,23,42,.85)">LOD (example)</text>
+            </svg>
+            <div style="display:grid; gap:8px; color: var(--muted); font-size: 12.5px; line-height: 1.55;">
+              <div><b>Calibration curve:</b> relates known analyte concentrations to measured signal so you can convert readings into concentration estimates.</div>
+              <div><b>LOD:</b> smallest reliably detectable concentration above baseline/noise (often defined via a threshold above the blank).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 ONLY -->
+    <section id="tabs">
+      <div class="sectionTitle">
+        <h2>2) Example tabs only</h2>
+        <p>CSS-only (works without scripts).</p>
+      </div>
+
+      <div class="card">
+        <div class="cardHeader">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <strong style="font-size:13.5px;">Tabs demo</strong>
+            <span class="hint">Example placeholder content</span>
+          </div>
+          <span class="kbd">Radio tabs</span>
+        </div>
+        <div class="cardBody">
+          <div class="tabs">
+            <input class="tabRadio" type="radio" name="tabs" id="tA" checked>
+            <input class="tabRadio" type="radio" name="tabs" id="tB">
+            <input class="tabRadio" type="radio" name="tabs" id="tC">
+
+            <div class="tabBar" role="tablist" aria-label="Example tabs">
+              <label class="tabLabel" for="tA" role="tab" aria-controls="panelA">Tab A</label>
+              <label class="tabLabel" for="tB" role="tab" aria-controls="panelB">Tab B</label>
+              <label class="tabLabel" for="tC" role="tab" aria-controls="panelC">Tab C</label>
+            </div>
+
+            <div class="tabPanel" role="tabpanel">
+              <div class="panel panelA" id="panelA">This is <b>Tab A</b>. (Example placeholder content.)</div>
+              <div class="panel panelB" id="panelB">This is <b>Tab B</b>. (Example placeholder content.)</div>
+              <div class="panel panelC" id="panelC">This is <b>Tab C</b>. (Example placeholder content.)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      This version uses no JavaScript so it previews reliably in restrictive environments.
+    </footer>
+  </main>
+</body>
+</html>
